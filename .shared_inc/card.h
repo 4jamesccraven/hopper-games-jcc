@@ -3,11 +3,11 @@
     #define CARD_H
 
     #include<iostream>
+    #include<string>
     #include<vector>
+    #include<ctime>
     #include<random>
     #include<algorithm>
-    #include<ctime>
-    #include<string>
 
     namespace cards{
         //card suits
@@ -28,25 +28,24 @@
         template<typename T>
         class deck {
         public:
-            deck();                             //constructor
+            constexpr deck();                   //constructor
 
             void shuffle();                     //deck manipulation
             card<T> deal();
+            void returnUsed();
 
             void print(std::ostream& os);       //print methods
             void printUsed(std::ostream& os);
         protected:
             std::vector<card<T>> internal_deck_;
             std::vector<card<T>> used_;
-            unsigned int size_;
         };
 
         //***---DECK---***//
         //constructors
         template<>
         inline cards::deck<cards::spanish_suit_type>::deck() {
-            size_ = 40;
-            internal_deck_.resize(size_);
+            internal_deck_.resize(40);
             unsigned int index = 0;
             std::for_each(internal_deck_.begin(), internal_deck_.end(), [&index](card<spanish_suit_type>& c){
                 unsigned int rank = (index % 10) + 1;
@@ -61,8 +60,7 @@
 
         template<>
         inline cards::deck<cards::french_suit_type>::deck() {
-            size_ = 52;
-            internal_deck_.resize(size_);
+            internal_deck_.resize(52);
             unsigned int index = 0;
             std::for_each(internal_deck_.begin(), internal_deck_.end(), [&index](card<french_suit_type>& c){
                 unsigned int rank = (index % 13) + 1;
@@ -78,6 +76,7 @@
         template <typename T>
         inline void deck<T>::shuffle() {
             std::mt19937 gen(std::time(NULL));
+            if (!used_.empty()) this->returnUsed();
             std::shuffle(internal_deck_.begin(), internal_deck_.end(), gen);
         }
 
@@ -87,6 +86,16 @@
             internal_deck_.pop_back();
             used_.push_back(dealt);
             return dealt;
+        }
+
+        template <typename T>
+        inline void deck<T>::returnUsed() {
+            while (!used_.empty()) {
+                card<T> toMove = used_.back();
+                used_.pop_back();
+                internal_deck_.push_back(toMove);
+            }
+            return;
         }
 
         //print methods
