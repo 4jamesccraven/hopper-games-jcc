@@ -7,6 +7,7 @@
     #include<random>
     #include<algorithm>
     #include<ctime>
+    #include<string>
 
     namespace cards{
         //card suits
@@ -39,7 +40,6 @@
             std::vector<card<T>> used_;
             unsigned int size_;
         };
-
 
         //***---DECK---***//
         //constructors
@@ -107,9 +107,101 @@
 
         //***---CARD---***//
         //card printing overload
-        template <typename T>
-        std::ostream &operator<<(std::ostream &os, card<T> c) {
-            os << c.rank << " of " << c.suit;
+        template <>
+        std::ostream &operator<<(std::ostream &os, card<cards::spanish_suit_type> c) {
+            std::string rankString;
+            std::string suitString;
+            switch(static_cast<int>(c.suit)) {
+            case 1:
+                suitString = "Coins";
+                break;
+            case 2:
+                suitString = "Swords";
+                break;
+            case 3:
+                suitString = "Cups";
+                break;
+            case 4:
+                suitString = "Rods";
+                break;
+            }
+            switch(c.rank){
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+                rankString = std::to_string(c.rank);
+                break;
+            case 10:
+                rankString = "Knight";
+                break;
+            case 11:
+                rankString = "Queen";
+                break;
+            case 12:
+                rankString = "King";
+                break;
+            default:
+                rankString = "error";
+                break;
+            }
+
+            os << rankString << " of " << suitString;
+            return os;
+        }
+
+        template <>
+        std::ostream &operator<<(std::ostream &os, card<cards::french_suit_type> c) {
+            std::string rankString;
+            std::string suitString;
+            switch(static_cast<int>(c.suit)) {
+            case 1:
+                suitString = "Hearts";
+                break;
+            case 2:
+                suitString = "Diamonds";
+                break;
+            case 3:
+                suitString = "Spades";
+                break;
+            case 4:
+                suitString = "Clubs";
+                break;
+            }
+            switch(c.rank){
+            case 1:
+                rankString = "Ace";
+                break;
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+                rankString = std::to_string(c.rank);
+                break;
+            case 11:
+                rankString = "Jack";
+                break;
+            case 12:
+                rankString = "Queen";
+                break;
+            case 13:
+                rankString = "King";
+                break;
+            default:
+                rankString = "error";
+                break;
+            }
+
+            os << rankString << " of " << suitString;
+            return os;
         }
     }
 
